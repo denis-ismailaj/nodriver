@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import json
 import logging
 import pathlib
@@ -824,6 +825,36 @@ class Element:
 
         await self.update()
         return await self.tab.query_selector(selector, self)
+
+    async def select(
+            self,
+            selector: str,
+            timeout: typing.Union[int, float] = 10,
+    ) -> Element:
+        """
+        find single element by css selector.
+        can also be used to wait for such element to appear.
+
+        :param selector: css selector, eg a[href], button[class*=close], a > img[src]
+        :type selector: str
+
+        :param timeout: raise timeout exception when after this many seconds nothing is found.
+        :type timeout: float,int
+
+        """
+        loop = asyncio.get_running_loop()
+        start_time = loop.time()
+
+        selector = selector.strip()
+        item = await self.query_selector(selector)
+
+        while not item:
+            await self
+            item = await self.query_selector(selector)
+            if loop.time() - start_time > timeout:
+                return item
+            await self.tab.sleep(0.5)
+        return item
 
     # async def find_all(self, string: str):
     #     base_node = self.node
