@@ -111,12 +111,6 @@ class Tab(Connection):
     also, it's ensuring :py:obj:`~url` will be updated to the most recent one, which is quite important in some
     other methods.
 
-    attempts to find the location of given template image in the current viewport
-    the only real use case for this is bot-detection systems.
-    you can find for example the location of a 'verify'-checkbox,
-    which are hidden from dom using shadow-root's or workers.
-
-
 
     await :py:obj:`Tab.template_location` (and await :py:obj:`Tab.verify_cf`)
     ------------------------------------------------------------------------------
